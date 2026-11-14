@@ -1,5 +1,5 @@
 // A custom element is implemented as a class which extends HTMLElement
-class PopupInfo extends HTMLElement {
+class AutonomousCustom extends HTMLElement {
 
     constructor() {
 
@@ -32,7 +32,7 @@ class PopupInfo extends HTMLElement {
 
         // Create container and styles
         const text = document.createElement('span');
-        text.textContent = 'Hello from inside my Custom Element!';
+        text.textContent = 'Hello from inside my Autonomous Custom Element!';
 
         const style = document.createElement('style');
         style.textContent = `
@@ -85,4 +85,4 @@ class PopupInfo extends HTMLElement {
 
 // Register the element with the browser
 // Note: Custom element names MUST contain a hyphen (-)
-customElements.define('popup-info', PopupInfo);
+customElements.define('autonomous-custom', AutonomousCustom);
