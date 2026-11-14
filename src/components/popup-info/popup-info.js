@@ -1,6 +1,12 @@
 // A custom element is implemented as a class which extends HTMLElement
-class WordCount extends HTMLElement {
+class PopupInfo extends HTMLElement {
+
     constructor() {
+
+        // Set up initial state and default values, register event listeners and  
+        // perhaps create a shadow root. At this point, you should not inspect the 
+        //  element's attributes or children, or add new attributes or children
+
         super();
 
         /*
@@ -20,6 +26,8 @@ class WordCount extends HTMLElement {
          */
 
         // Create a Shadow DOM root
+        //   mode: 'open' means that the Shadow DOM can be accessed from outside the
+        //   component using JavaScript via the element's .shadowRoot property
         const shadow = this.attachShadow({ mode: 'open' });
 
         // Create container and styles
@@ -41,8 +49,40 @@ class WordCount extends HTMLElement {
         shadow.appendChild(style);
         shadow.appendChild(text);
     }
+
+    connectedCallback() {
+        // Called each time the element is added to the document
+
+        console.log("Custom element added to page.");
+    }
+
+    disconnectedCallback() {
+        // Called each time the element is removed from the document
+
+        console.log("Custom element removed from page.");
+    }
+
+    connectedMoveCallback() {
+        // When defined, this is called instead of connectedCallback() and 
+        // disconnectedCallback() each time the element is moved to a different 
+        // place in the DOM via Element.moveBefore()
+
+        console.log("Custom element moved with moveBefore()");
+    }
+
+    adoptedCallback() {
+        // Called each time the element is moved to a new document
+
+        console.log("Custom element moved to new page.");
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        // Called when attributes are changed, added, removed, or replaced
+        
+        console.log(`Attribute ${name} has changed.`);
+    }
 }
 
 // Register the element with the browser
 // Note: Custom element names MUST contain a hyphen (-)
-customElements.define('word-count', WordCount);
+customElements.define('popup-info', PopupInfo);
