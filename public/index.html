@@ -119,6 +119,27 @@
 
     <my-template></my-template>
 
+    <h2>Slot</h2>
+    <template id="my-slot-paragraph">
+        <style>
+            p {
+            color: white;
+            background-color: #666666;
+            padding: 5px;
+            }
+        </style>
+        <p>
+            <slot name="my-text">My default text</slot>
+            <slot></slot>
+        </p>
+    </template>
+
+    <my-slot>
+        <span slot="my-text">Let's have some different text!</span>
+        <span>This will go into the unnamed slot.</span>
+        <span>This will also go into the unnamed slot.</span>
+    </my-slot>
+
     <h2>Scoped element</h2>
     <scoped-element></scoped-element>
 </body>

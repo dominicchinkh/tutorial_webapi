@@ -4,6 +4,8 @@ customElements.define(
         constructor() {
             super();
 
+            // Using templates with web components
+            
             let template = document.getElementById("my-template");
             let templateContent = template.content;
 
