@@ -13,6 +13,11 @@ class AutonomousCustom extends HTMLElement {
 
         super();
 
+        // The collapsed state is represented as a boolean property (with setter and 
+        // getter methods) that is not visible outside of the element. To make this 
+        // state selectable in CSS the custom element:
+        this._internals = this.attachInternals();
+
         /*
          * Shadow DOM enables you to attach a DOM tree to an element, and have the 
          * internals of this tree hidden from JavaScript and CSS running in the page
@@ -39,6 +44,11 @@ class AutonomousCustom extends HTMLElement {
         text.textContent = 'Hello from inside my Autonomous Custom Element!';
 
         const style = document.createElement('style');
+
+        // Autonomous custom elements (but not elements based on built-in elements) 
+        // also allow you to define states and select against them using the :state() 
+        // pseudo-class function
+        
         style.textContent = `
             span {
                 color: #0076ff;
@@ -46,6 +56,9 @@ class AutonomousCustom extends HTMLElement {
                 padding: 8px;
                 border: 1px solid #0076ff;
                 border-radius: 4px;
+            }
+            span:state(hidden) {
+                border: none;
             }
         `;
 
@@ -86,6 +99,23 @@ class AutonomousCustom extends HTMLElement {
         console.log(
             `Attribute ${name} has changed from ${oldValue} to ${newValue}.`,
         );
+    }
+
+    //-----------------------------------------------------------
+    // Custom states and custom state pseudo-class CSS selectors
+
+    get collapsed() {
+        return this._internals.states.has("hidden");
+    }
+
+    set collapsed(flag) {
+        if (flag) {
+            // Existence of identifier corresponds to "true"
+            this._internals.states.add("hidden");
+        } else {
+            // Absence of identifier corresponds to "false"
+            this._internals.states.delete("hidden");
+        }
     }
 }
 
