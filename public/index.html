@@ -7,11 +7,49 @@
     <script type="module" src="/src/index.js"></script>
 </head>
 <body>
-    <h1>My custom element</h1>
-    
-    <!-- Use your custom element tag in HTML -->
+    <h2>Autonomous custom element</h2>
     <autonomous-custom size="100"></autonomous-custom>
-    <p is="customized-builtin">Customized built-in element</p>
+
+    <h2>Customized built-in element</h2>
+    <ul is="customized-builtin">
+        <li>
+            UK
+            <ul>
+                <li>
+                    Yorkshire
+                    <ul>
+                        <li>
+                            Leeds
+                            <ul>
+                                <li>Train station</li>
+                                <li>Town hall</li>
+                                <li>Headrow</li>
+                            </ul>
+                        </li>
+                        <li>Bradford</li>
+                        <li>Hull</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            USA
+            <ul>
+                <li>
+                    California
+                    <ul>
+                        <li>Los Angeles</li>
+                        <li>San Francisco</li>
+                        <li>Berkeley</li>
+                    </ul>
+                </li>
+                <li>Nevada</li>
+                <li>Oregon</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Scoped element</h2>
     <scoped-element></scoped-element>
     
 </body>
