@@ -12,7 +12,7 @@ class DeclarativeCard extends HTMLElement {
         // immediately via this.shadowRoot
 
         const shadow = this.shadowRoot;
-        
+
         // <template shadowrootmode="open">
         //   With mode set to "open", the JavaScript in the page is able to access
         //   the internals of your shadow DOM through the shadowRoot property of the 
@@ -26,6 +26,14 @@ class DeclarativeCard extends HTMLElement {
                 });
             }
         }
+
+        //---------------------------
+        // Constructable stylesheets
+
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync("span { color: red; border: 2px dotted black;}");
+
+        shadow.adoptedStyleSheets = [sheet];
     }
 }
 

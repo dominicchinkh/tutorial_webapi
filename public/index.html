@@ -52,7 +52,12 @@
 
     <h2>Declarative Shadow DOM</h2>
     <declarative-card>
-        <!-- Note: there's no <template> element in the resulting DOM tree -->
+        <!-- 
+            Note: there's no <template> element in the resulting DOM tree 
+
+            <template> won't appear in your page until you grab a reference to it 
+            with JavaScript and then append it to the DOM
+        -->
         <template shadowrootmode="open">
             <style>
                 :host {
@@ -87,6 +92,7 @@
             </style>
             <div>
                 <h3>Declarative Component</h3>
+                <span>Introduction:</span>
                 <p>This content was rendered directly by the HTML parser via Declarative Shadow DOM without requiring JavaScript to build the shadow tree!</p>
                 <button id="alert-btn">Click Me</button>
             </div>
