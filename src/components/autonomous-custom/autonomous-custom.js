@@ -1,6 +1,10 @@
 // A custom element is implemented as a class which extends HTMLElement
 class AutonomousCustom extends HTMLElement {
 
+    // An array containing the names of all attributes for which the element needs
+    // change notifications
+    static observedAttributes = ["size"];
+
     constructor() {
 
         // Set up initial state and default values, register event listeners and  
@@ -79,7 +83,9 @@ class AutonomousCustom extends HTMLElement {
     attributeChangedCallback(name, oldValue, newValue) {
         // Called when attributes are changed, added, removed, or replaced
         
-        console.log(`Attribute ${name} has changed.`);
+        console.log(
+            `Attribute ${name} has changed from ${oldValue} to ${newValue}.`,
+        );
     }
 }
 
