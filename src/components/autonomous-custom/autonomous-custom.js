@@ -56,6 +56,10 @@ class AutonomousCustom extends HTMLElement {
         // pseudo-class function
         
         style.textContent = `
+            :host {
+                display: block;
+                margin-bottom: 12px;
+            }
             span {
                 color: #0076ff;
                 font-weight: bold;
