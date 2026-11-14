@@ -50,8 +50,50 @@
         </li>
     </ul>
 
+    <h2>Declarative Shadow DOM</h2>
+    <declarative-card>
+        <!-- Note: there's no <template> element in the resulting DOM tree -->
+        <template shadowrootmode="open">
+            <style>
+                :host {
+                    display: block;
+                    border: 2px solid #3b82f6;
+                    border-radius: 12px;
+                    padding: 20px;
+                    background-color: #eff6ff;
+                    font-family: system-ui, sans-serif;
+                    max-width: 400px;
+                    margin-bottom: 16px;
+                }
+                h3 {
+                    color: #1e3a8a;
+                    margin-top: 0;
+                }
+                p {
+                    color: #1e293b;
+                    line-height: 1.5;
+                }
+                button {
+                    background-color: #3b82f6;
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                }
+                button:hover {
+                    background-color: #2563eb;
+                }
+            </style>
+            <div>
+                <h3>Declarative Component</h3>
+                <p>This content was rendered directly by the HTML parser via Declarative Shadow DOM without requiring JavaScript to build the shadow tree!</p>
+                <button id="alert-btn">Click Me</button>
+            </div>
+        </template>
+    </declarative-card>
+
     <h2>Scoped element</h2>
     <scoped-element></scoped-element>
-    
 </body>
 </html>
