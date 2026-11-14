@@ -99,6 +99,26 @@
         </template>
     </declarative-card>
 
+    <h2>Template</h2>
+    <template id="my-template">
+        <style>
+            :host {
+                display: block;
+                margin-bottom: 12px;
+            }
+            p {
+                color: white;
+                background-color: #666;
+                padding: 8px 12px;
+                border-radius: 4px;
+                font-family: system-ui, sans-serif;
+            }
+        </style>
+        <p>My paragraph</p>
+    </template>
+
+    <my-template></my-template>
+
     <h2>Scoped element</h2>
     <scoped-element></scoped-element>
 </body>
