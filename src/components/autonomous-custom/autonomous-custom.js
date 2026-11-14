@@ -17,6 +17,12 @@ class AutonomousCustom extends HTMLElement {
         // getter methods) that is not visible outside of the element. To make this 
         // state selectable in CSS the custom element:
         this._internals = this.attachInternals();
+    }
+
+    connectedCallback() {
+        // Called each time the element is added to the document
+
+        console.log("Custom element added to page.");
 
         /*
          * Shadow DOM enables you to attach a DOM tree to an element, and have the 
@@ -62,15 +68,19 @@ class AutonomousCustom extends HTMLElement {
             }
         `;
 
+        /*
+         * Alternative: Apply external styles to the shadow dom
+         *
+         *   const linkElem = document.createElement("link");
+         *   linkElem.setAttribute("rel", "stylesheet");
+         *   linkElem.setAttribute("href", "style.css");
+         * 
+         *   shadow.appendChild(linkElem);
+         */
+
         // Attach to Shadow DOM
         shadow.appendChild(style);
         shadow.appendChild(text);
-    }
-
-    connectedCallback() {
-        // Called each time the element is added to the document
-
-        console.log("Custom element added to page.");
     }
 
     disconnectedCallback() {
