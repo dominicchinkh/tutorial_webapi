@@ -1,6 +1,7 @@
 // Entry point exporting/importing all components
 
 // Import your custom web component
+import './components/indexed-db/indexed-db.js';
 import './components/web-component/autonomous-custom/autonomous-custom.js';
 import './components/web-component/autonomous-custom/my-slot.js';
 import './components/web-component/autonomous-custom/my-template.js';

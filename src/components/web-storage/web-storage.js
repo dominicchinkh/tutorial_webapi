@@ -104,7 +104,6 @@ class WebStorageDemo extends HTMLElement {
                 }
             </style>
             <div>
-                <h3>Web Storage API Demo</h3>
                 <label for="name-input">Enter your name:</label>
                 <input type="text" id="name-input" placeholder="e.g., Jane Doe" />
                 <br>
