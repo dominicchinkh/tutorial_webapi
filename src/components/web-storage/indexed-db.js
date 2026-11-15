@@ -69,12 +69,24 @@ class IndexedDB extends HTMLElement {
         };
 
         request.onsuccess = (event) => {
+
+            // IDBDatabase
             this.db = event.target.result;
+
             this.shadowRoot.getElementById('status').textContent = 'Database connected successfully!';
             this.loadTasks();
         };
 
         // 2. onupgradeneeded is the only place to structure/alter database schemas
+
+        // If the database doesn't already exist: 
+        //   It is created by the open operation, then an onupgradeneeded event is 
+        //   triggered and you create the database schema in the handler for this event
+
+        // If the database does exist but you are specifying an upgraded version number:
+        //   An onupgradeneeded event is triggered straight away, allowing you to provide
+        //   an updated schema in its handler
+
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
 
@@ -83,6 +95,9 @@ class IndexedDB extends HTMLElement {
 
             // Create an index to search or filter by hours
             objectStore.createIndex('hours', 'hours', { unique: false });
+
+            // If the onupgradeneeded event exits successfully, the onsuccess handler 
+            // of the open database request will then be triggered
         };
     }
 
