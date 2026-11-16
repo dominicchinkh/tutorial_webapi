@@ -93,6 +93,9 @@ class IndexedDB extends HTMLElement {
             // Create an object store named "toDoList" with keyPath "taskTitle"
             const objectStore = db.createObjectStore('toDoList', { keyPath: 'taskTitle' });
 
+            // Create object store with the autoIncrement flag set as true.
+            //   const objectStore = db.createObjectStore("toDoList", { autoIncrement: true });
+
             // Create an index to search or filter by hours
             objectStore.createIndex('hours', 'hours', { unique: false });
 
@@ -115,19 +118,57 @@ class IndexedDB extends HTMLElement {
             const newItem = { taskTitle, hours };
 
             // 3. Open a readwrite transaction to add data
+
+            /*
+             * Transaction lifetime:
+             *
+             *   If you make a transaction and return to the event loop without using
+             *   it then the transaction will become inactive
+             * 
+             *   The only way to keep the transaction active is to make a request on it
+             * 
+             *   When the request is finished you'll get a DOM event and, assuming that 
+             *   the request succeeded, you'll have another opportunity to extend the 
+             *   transaction during that callback
+             * 
+             *   If you return to the event loop without extending the transaction then 
+             *   it will become inactive, and so on
+             */
+
             const transaction = this.db.transaction(['toDoList'], 'readwrite');
             const objectStore = transaction.objectStore('toDoList');
             const request = objectStore.add(newItem);
 
-            request.onsuccess = () => {
+            // Transactions can receive DOM events of three different types: error, 
+            // abort, and complete
+
+            request.onsuccess = (event) => {
+                
+                // The key of the value that was added. So in this case, it should 
+                // equal the taskTitle property of the object that was added
+                console.log(event.target.result);
+
                 this.shadowRoot.getElementById('task-input').value = '';
                 this.shadowRoot.getElementById('hours-input').value = '';
                 this.shadowRoot.getElementById('status').textContent = `Task "${taskTitle}" added!`;
                 this.loadTasks();
             };
 
+            // The default behavior of an error is to abort the transaction in which 
+            // it occurred
+
             request.onerror = (event) => {
                 this.shadowRoot.getElementById('status').textContent = 'Error adding task (Duplicate?): ' + event.target.error;
+
+                // The entire transaction is rolled back
+            };
+
+            transaction.oncomplete = () => {
+                console.log("Transaction successfully completed and committed to IndexedDB.");
+            };
+
+            transaction.onerror = (event) => {
+                console.log("Transaction failed/aborted:", event.target.error);
             };
         });
     }
