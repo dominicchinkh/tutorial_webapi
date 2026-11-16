@@ -191,7 +191,37 @@ class IndexedDB extends HTMLElement {
             if (cursor) {
                 const li = document.createElement('li');
                 li.textContent = `${cursor.value.taskTitle} — ${cursor.value.hours} hour(s)`;
+
+                // Create the delete "X" button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'X';
+                deleteBtn.style.marginLeft = '8px';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.style.color = 'white';
+                deleteBtn.style.backgroundColor = '#dc2626';
+
+                deleteBtn.addEventListener('click', () => {
+                    
+                    // Open a new readwrite transaction for deletion
+                    const deleteTransaction = this.db.transaction(['toDoList'], 'readwrite');
+                    const store = deleteTransaction.objectStore('toDoList');
+                    
+                    // Delete using the keyPath value (taskTitle)
+                    const request = store.delete(cursor.value.taskTitle);
+
+                    request.onsuccess = () => {
+                        this.shadowRoot.getElementById('status').textContent = `Task "${cursor.value.taskTitle}" deleted.`;
+                        this.loadTasks(); // Refresh list after deletion
+                    };
+
+                    request.onerror = (e) => {
+                        this.shadowRoot.getElementById('status').textContent = 'Error deleting task: ' + e.target.error;
+                    };
+                });
+
+                li.appendChild(deleteBtn);
                 taskList.appendChild(li);
+
                 cursor.continue();
             }
         };
