@@ -99,8 +99,26 @@ class IndexedDB extends HTMLElement {
             // Create an index to search or filter by hours
             objectStore.createIndex('hours', 'hours', { unique: false });
 
+            // The index can also be created on multiple properties
+            //   const index = objectStore.createIndex("hours_task", ["hours", "taskTitle"], { unique: false });
+
+            // Make sure to add a handler to be notified if another page requests a version
+            // change. We must close the database. This allows the other page to upgrade the database.
+            // If you don't do this then the upgrade won't happen until the user closes the tab.
+
+            objectStore.onversionchange = (event) => {
+                db.close();
+                console.log("A new version of this page is ready. Please reload or close this tab!");
+            };
+
             // If the onupgradeneeded event exits successfully, the onsuccess handler 
             // of the open database request will then be triggered
+        };
+
+        request.onblocked = (event) => {
+            // If some other tab is loaded with the database, then it needs to be closed
+            // before we can proceed.
+            console.log("Please close all other tabs with this site open!");
         };
     }
 
@@ -181,12 +199,49 @@ class IndexedDB extends HTMLElement {
             return;
         }
 
+        /*
+         * Retrieving/updating data:
+         *
+         *   const objectStore = db.transaction(["toDoList"], "readwrite")
+         *                         .objectStore("toDoList");
+         *   const request = objectStore.get("Learn IndexedDB");
+         *
+         *   request.onerror = (event) => {
+         *      // Handle errors!
+         *   };
+         *
+         *   request.onsuccess = (event) => {
+         *
+         *      // Get the old value that we want to update
+         *      const data = event.target.result;
+         *
+         *      // Update the value(s) in the object that you want to change
+         *      data.hours = 2;
+         *
+         *      // Put this updated object back into the database.
+         *      const requestUpdate = objectStore.put(data);
+         * 
+         *      requestUpdate.onerror = (event) => {
+         *          // Do something with the error
+         *      };
+         * 
+         *      requestUpdate.onsuccess = (event) => {
+         *          // Success - the data is updated!
+         *      };
+         */
+
         // 4. Read data using a read-only transaction and a cursor
         const transaction = this.db.transaction(['toDoList'], 'readonly');
         const objectStore = transaction.objectStore('toDoList');
 
+        // Iterating over all objects in ascending order
+
         objectStore.openCursor().onsuccess = (event) => {
             const cursor = event.target.result;
+
+            // When you've reached the end of the data (or if there were no entries 
+            // that matched your openCursor() request) you still get a success callback, 
+            // but the result property is undefined
 
             if (cursor) {
                 const li = document.createElement('li');
@@ -201,7 +256,7 @@ class IndexedDB extends HTMLElement {
                 deleteBtn.style.backgroundColor = '#dc2626';
 
                 deleteBtn.addEventListener('click', () => {
-                    
+
                     // Open a new readwrite transaction for deletion
                     const deleteTransaction = this.db.transaction(['toDoList'], 'readwrite');
                     const store = deleteTransaction.objectStore('toDoList');
@@ -225,6 +280,86 @@ class IndexedDB extends HTMLElement {
                 cursor.continue();
             }
         };
+
+        // Alternatively:
+        //   objectStore.getAll().onsuccess = (event) => {
+        //       console.log(`Got all tasks: ${event.target.result}`);
+        //   };
+
+        /*----------------
+         * Using an index
+         *
+         * There could be more than one entry with the hours set to 2. In that case you
+         * always get the one with the lowest key value:
+         *
+         *   const index = objectStore.index("hours");
+         *   index.get(2).onsuccess = (event) => {
+         *       console.log(`Task is ${event.target.result.taskTitle}`);
+         *   };
+         *
+         * Using a key cursor to grab customer record object keys:
+         *
+         *   index.openKeyCursor().onsuccess = (event) => {
+         *       const cursor = event.target.result;
+         *
+         *       if (cursor) {
+         *           // cursor.key is a hours and cursor.primaryKey is the task title.
+         *           // No way to directly get the rest of the stored object
+         *
+         *           console.log(`Hours: ${cursor.key}, Task: ${cursor.primaryKey}`);
+         *           cursor.continue();
+         *       }
+         *   };
+         *
+         * Query the index created on multiple properties:
+         *
+         *   const index = objectStore.index("hours_task");
+         *
+         *   index.get([2, "Learn Indexed DB"]).onsuccess = (event) => {
+         *       console.log(event.target.result);
+         *   };
+         */
+
+        /*---------------------------------
+         * Specifying the range of cursors
+         *
+         *   // Only match "Donna"
+         *   const singleKeyRange = IDBKeyRange.only("Donna");
+         * 
+         *   // Match anything past "Bill", including "Bill"
+         *   const lowerBoundKeyRange = IDBKeyRange.lowerBound("Bill");
+         * 
+         *   // Match anything past "Bill", but don't include "Bill"
+         *   const lowerBoundOpenKeyRange = IDBKeyRange.lowerBound("Bill", true);
+         * 
+         *   // Match anything up to, but not including, "Donna"
+         *   const upperBoundOpenKeyRange = IDBKeyRange.upperBound("Donna", true);
+         * 
+         *   // Match anything between "Bill" and "Donna", but not including "Donna"
+         *   const boundKeyRange = IDBKeyRange.bound("Bill", "Donna", false, true);
+         * 
+         *   // To use one of the key ranges, pass it in as the first argument of openCursor()/openKeyCursor()
+         *   index.openCursor(boundKeyRange).onsuccess = (event) => {
+         *       const cursor = event.target.result;
+         *       if (cursor) {
+         *           // Do something with the matches.
+         *           cursor.continue();
+         *       }
+         *   };
+         */
+
+        /*-------------------------------------
+         * Specifying the direction of cursors
+         *
+         *   // Iterate in descending order
+         *   objectStore.openCursor(boundKeyRange, "prev").onsuccess = (event) => {
+         *       const cursor = event.target.result;
+         *       if (cursor) {
+         *           // Do something with the entries.
+         *           cursor.continue();
+         *       }
+         *   };
+         */
     }
 }
 
